@@ -7,7 +7,7 @@ class JokeApp : Application() {
     lateinit var viewModel: ViewModel
     override fun onCreate() {
         super.onCreate()
-        viewModel = ViewModel(TestViewModel(ResourceManager.Base(this)))
+        viewModel = ViewModel(BaseModel(JokeService.Base(), ResourceManager.Base(this)))
     }
 
 
