@@ -1,5 +1,9 @@
 package com.example.jokeappeasycoderu
 
+import retrofit2.Call
+import retrofit2.Response
+import java.net.UnknownHostException
+
 class BaseModel(private val service: JokeService, private val resourceManager: ResourceManager) :
     Model<Joke, JokeFailure> {
     private var callback: ResultCallback<Joke, JokeFailure>? = null
@@ -7,19 +11,21 @@ class BaseModel(private val service: JokeService, private val resourceManager: R
     private val serviceUnavailable by lazy { ServiceUnavailable(resourceManager) }
 
     override fun getJoke() {
-        service.getJoke(object : ServiceCallback {
-
-            override fun returnSuccess(data: JokeDTO) {
-                callback?.success(data.toJoke())
-            }
-
-            override fun returnError(type: ErrorType) {
-                when (type) {
-                    ErrorType.NO_CONNECTION -> callback?.error(noConnection)
-                    ErrorType.OTHER -> callback?.error(serviceUnavailable)
+        service.getJoke().enqueue(object : retrofit2.Callback<JokeDTO> {
+            override fun onResponse(call: Call<JokeDTO>, response: Response<JokeDTO>) {
+                if (response.isSuccessful){
+                    callback?.success(response.body()!!.toJoke())
+                }else{
+                    callback?.error(serviceUnavailable)
                 }
             }
 
+            override fun onFailure(call: Call<JokeDTO>, t: Throwable) {
+                if (t is UnknownHostException)
+                    callback?.error(noConnection)
+                else
+                    callback?.error(serviceUnavailable)
+            }
         })
     }
 
