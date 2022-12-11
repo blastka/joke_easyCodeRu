@@ -11,6 +11,7 @@ interface ResourceManager {
             return context.getString(stringRes)
         }
 
+
     }
 }
 

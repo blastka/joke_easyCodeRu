@@ -1,5 +1,6 @@
 package com.example.jokeappeasycoderu
 
+import com.google.gson.Gson
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -11,7 +12,7 @@ import java.net.UnknownHostException
 interface JokeService {
     fun getJoke(callback : ServiceCallback)
 
-    class Base(): JokeService{
+    class Base(private val gson: Gson): JokeService{
         override fun getJoke(callback: ServiceCallback) {
             Thread{
                 var connection: HttpURLConnection? = null
@@ -20,7 +21,8 @@ interface JokeService {
                     connection = url.openConnection() as HttpURLConnection
                     InputStreamReader(BufferedInputStream(connection.inputStream)).use{
                         val line: String = it.readText()
-                        callback.returnSuccess(line)
+                        val dto = gson.fromJson(line, JokeDTO::class.java)
+                        callback.returnSuccess(dto)
                     }
                 }catch (e: Exception){
                     if (e is UnknownHostException)

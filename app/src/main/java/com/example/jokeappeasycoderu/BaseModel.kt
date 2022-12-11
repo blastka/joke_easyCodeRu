@@ -8,8 +8,9 @@ class BaseModel(private val service: JokeService, private val resourceManager: R
 
     override fun getJoke() {
         service.getJoke(object : ServiceCallback {
-            override fun returnSuccess(data: String) {
-                callback?.success(Joke.Base(data, ""))
+
+            override fun returnSuccess(data: JokeDTO) {
+                callback?.success(data.toJoke())
             }
 
             override fun returnError(type: ErrorType) {
