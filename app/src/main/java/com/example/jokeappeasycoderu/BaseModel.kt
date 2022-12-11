@@ -6,12 +6,12 @@ import java.net.UnknownHostException
 
 class BaseModel(private val service: JokeService, private val resourceManager: ResourceManager) :
     Model<Joke, JokeFailure> {
-    private var callback: ResultCallback<Joke, JokeFailure>? = null
+    private var callback: ResultCallback? = null
     private val noConnection by lazy { NoConnection(resourceManager) }
     private val serviceUnavailable by lazy { ServiceUnavailable(resourceManager) }
 
     override fun getJoke() {
-        service.getJoke().enqueue(object : retrofit2.Callback<JokeDTO> {
+       /* service.getJoke().enqueue(object : retrofit2.Callback<JokeDTO> {
             override fun onResponse(call: Call<JokeDTO>, response: Response<JokeDTO>) {
                 if (response.isSuccessful){
                     callback?.success(response.body()!!.toJoke())
@@ -26,10 +26,10 @@ class BaseModel(private val service: JokeService, private val resourceManager: R
                 else
                     callback?.error(serviceUnavailable)
             }
-        })
+        })*/
     }
 
-    override fun init(callback: ResultCallback<Joke, JokeFailure>) {
+    override fun init(callback: ResultCallback) {
         this.callback = callback
     }
 

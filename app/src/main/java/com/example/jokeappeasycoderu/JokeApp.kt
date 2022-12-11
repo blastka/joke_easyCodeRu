@@ -15,8 +15,7 @@ class JokeApp : Application() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         viewModel = ViewModel(
-            BaseModel(
-                retrofit.create(JokeService::class.java),
+            TestViewModel(
                 ResourceManager.Base(this)
             )
         )

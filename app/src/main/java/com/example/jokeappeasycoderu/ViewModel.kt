@@ -1,19 +1,18 @@
 package com.example.jokeappeasycoderu
 
 class ViewModel(private val model: Model<Joke, JokeFailure>) {
-    private var callback: TextCallback? = null
+    private var callback: DataCallback? = null
 
-    fun init(callback: TextCallback) {
+    fun init(callback: DataCallback) {
         this.callback = callback
-        model.init(object : ResultCallback<Joke, JokeFailure> {
-            override fun success(data: Joke) {
-                callback.provideText(data.getJokeUi())
+        model.init(object : ResultCallback {
+            override fun provideJoke(joke: Joke) {
+                callback?.run {
+                    callback.let {
+                        joke.map(it)
+                    }
+                }
             }
-
-            override fun error(error: JokeFailure) {
-                callback.provideText(error.getMessage())
-            }
-
         })
     }
     fun getJoke(){
@@ -24,6 +23,10 @@ class ViewModel(private val model: Model<Joke, JokeFailure>) {
        callback = null
        model.clear()
    }
+
+    fun chooseFavorites(checked : Boolean){
+
+    }
 
 }
 
