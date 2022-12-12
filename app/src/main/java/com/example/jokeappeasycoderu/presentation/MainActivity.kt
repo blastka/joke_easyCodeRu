@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         val textView = findViewById<TextView>(R.id.textView)
         val checkBox = findViewById<CheckBox>(R.id.checkBox)
-        val favoriteImageView = findViewById<ImageView>(R.id.favoriteImageView)
+        val favoriteImageButton = findViewById<ImageView>(R.id.favoriteImageButton)
         checkBox.setOnCheckedChangeListener{_, isChecked ->
             viewModel.chooseFavorites(isChecked)
         }
@@ -28,6 +28,10 @@ class MainActivity : AppCompatActivity() {
             progressBar.visibility = View.VISIBLE
             viewModel.getJoke()
         }
+        favoriteImageButton.setOnClickListener {
+            viewModel.changeJokeStatus()
+        }
+
 
         viewModel.init(object : DataCallback{
             override fun provideText(text: String) = runOnUiThread{
@@ -37,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun provideIconRes(id: Int) = runOnUiThread{
-                favoriteImageView.setImageResource(id)
+                favoriteImageButton.setImageResource(id)
             }
 
         })

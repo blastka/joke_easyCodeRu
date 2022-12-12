@@ -1,8 +1,8 @@
 package com.example.jokeappeasycoderu
 
-class TestViewModel(private val resourceManager: ResourceManager) : Model<Joke, JokeFailure> {
+class TestViewModel(private val resourceManager: ResourceManager) : Model {
 
-    private var callback: ResultCallback? = null
+    private var callback: JokeCallback? = null
     private var count = 0
     private val noConnection = NoConnection(resourceManager)
     private val serviceUnavailable = ServiceUnavailable(resourceManager)
@@ -11,9 +11,9 @@ class TestViewModel(private val resourceManager: ResourceManager) : Model<Joke, 
         Thread {
             Thread.sleep(1000)
             when (count) {
-                0 -> callback?.provideJoke(Joke.Base("testText", "testPunchline"))
-                1 -> callback?.provideJoke(Joke.FavoriteJoke("favorite", "favorite"))
-                2 -> callback?.provideJoke(Joke.Failed(serviceUnavailable.getMessage()))
+                0 -> callback?.provide(Joke.Base("testText", "testPunchline"))
+                1 -> callback?.provide(Joke.FavoriteJoke("favorite", "favorite"))
+                2 -> callback?.provide(Joke.Failed(serviceUnavailable.getMessage()))
             }
             count++
             if (count == 3)
@@ -21,11 +21,15 @@ class TestViewModel(private val resourceManager: ResourceManager) : Model<Joke, 
         }.start()
     }
 
-    override fun init(callback: ResultCallback) {
+    override fun init(callback: JokeCallback) {
         this.callback = callback
     }
 
     override fun clear() {
         callback = null
+    }
+
+    override fun changeJokeStatus(callback: JokeCallback) {
+        TODO("Not yet implemented")
     }
 }

@@ -1,39 +1,46 @@
 package com.example.jokeappeasycoderu
 
-import retrofit2.Call
-import retrofit2.Response
-import java.net.UnknownHostException
+class BaseModel(
+    private val cacheDataSource: CacheDataSource,
+    private val cloudDataSource: CloudDataSource,
+    private val resourceManager: ResourceManager
+) :
+    Model {
+    private var jokeCallback: JokeCallback? = null
 
-class BaseModel(private val service: JokeService, private val resourceManager: ResourceManager) :
-    Model<Joke, JokeFailure> {
-    private var callback: ResultCallback? = null
     private val noConnection by lazy { NoConnection(resourceManager) }
     private val serviceUnavailable by lazy { ServiceUnavailable(resourceManager) }
+    private var cachedJokeServerModel: ServerModel? = null
 
     override fun getJoke() {
-       /* service.getJoke().enqueue(object : retrofit2.Callback<JokeDTO> {
-            override fun onResponse(call: Call<JokeDTO>, response: Response<JokeDTO>) {
-                if (response.isSuccessful){
-                    callback?.success(response.body()!!.toJoke())
-                }else{
-                    callback?.error(serviceUnavailable)
-                }
+        cloudDataSource.getJoke(object : JokeCloudCallback{
+            override fun provide(joke: ServerModel.JokeServerModel) {
+                cachedJokeServerModel = joke
+                jokeCallback?.provide(joke.toJoke())
             }
 
-            override fun onFailure(call: Call<JokeDTO>, t: Throwable) {
-                if (t is UnknownHostException)
-                    callback?.error(noConnection)
+            override fun fail(error: ErrorType) {
+                cachedJokeServerModel = null
+                val failure = if (error == ErrorType.NO_CONNECTION) noConnection
                 else
-                    callback?.error(serviceUnavailable)
+                    serviceUnavailable
+                jokeCallback?.provide(Joke.Failed(failure.getMessage()))
             }
-        })*/
+
+        })
     }
 
-    override fun init(callback: ResultCallback) {
-        this.callback = callback
+    override fun init(callback: JokeCallback) {
+        this.jokeCallback = callback
     }
 
     override fun clear() {
-        callback = null
+        jokeCallback = null
+    }
+
+    override fun changeJokeStatus(callback: JokeCallback) {
+        cachedJokeServerModel?.change(cacheDataSource)?.let {
+            callback.provide(it)
+        }
     }
 }
