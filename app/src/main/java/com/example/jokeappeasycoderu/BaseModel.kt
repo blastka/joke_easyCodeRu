@@ -38,9 +38,9 @@ class BaseModel(
         jokeCallback = null
     }
 
-    override fun changeJokeStatus(callback: JokeCallback) {
+    override fun changeJokeStatus(jokeCallback: JokeCallback) {
         cachedJokeServerModel?.change(cacheDataSource)?.let {
-            callback.provide(it)
+            jokeCallback.provide(it)
         }
     }
 }
