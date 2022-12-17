@@ -2,7 +2,7 @@ package com.example.jokeappeasycoderu
 
 interface JokeCloudCallback {
     fun provide(joke: ServerModel.JokeServerModel)
-    fun fail(error: ErrorType)
+    fun fail(errorType: ErrorType)
 }
 
 enum class ErrorType{

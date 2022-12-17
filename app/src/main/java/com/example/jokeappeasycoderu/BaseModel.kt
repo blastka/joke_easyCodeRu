@@ -10,24 +10,33 @@ class BaseModel(
 
     private val noConnection by lazy { NoConnection(resourceManager) }
     private val serviceUnavailable by lazy { ServiceUnavailable(resourceManager) }
+    private val noCachedJokes by lazy{NoCachedJokes(resourceManager)}
     private var cachedJokeServerModel: ServerModel? = null
-
+    private var getJokeFromCache = false
     override fun getJoke() {
-        cloudDataSource.getJoke(object : JokeCloudCallback{
-            override fun provide(joke: ServerModel.JokeServerModel) {
-                cachedJokeServerModel = joke
-                jokeCallback?.provide(joke.toJoke())
-            }
+        if(getJokeFromCache) {
+            cacheDataSource.getJoke(object : JokeCacheCallback {
+                override fun provide(joke: ServerModel.JokeServerModel) {
+                    cachedJokeServerModel = joke
+                    jokeCallback?.provide(joke.toFavoriteJoke())
+                }
 
-            override fun fail(error: ErrorType) {
-                cachedJokeServerModel = null
-                val failure = if (error == ErrorType.NO_CONNECTION) noConnection
-                else
-                    serviceUnavailable
-                jokeCallback?.provide(Joke.Failed(failure.getMessage()))
-            }
+                override fun fail() {
+                    jokeCallback?.provide(Joke.Failed(noCachedJokes.getMessage()))
+                }
 
-        })
+            })
+        } else
+            cloudDataSource.getJoke(object: JokeCloudCallback{
+                override fun provide(joke: ServerModel.JokeServerModel) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun fail(errorType: ErrorType) {
+                    TODO("Not yet implemented")
+                }
+
+            })
     }
 
     override fun init(callback: JokeCallback) {
@@ -42,5 +51,9 @@ class BaseModel(
         cachedJokeServerModel?.change(cacheDataSource)?.let {
             jokeCallback.provide(it)
         }
+    }
+
+    override fun chooseDataSource(cached: Boolean) {
+        getJokeFromCache = cached
     }
 }
