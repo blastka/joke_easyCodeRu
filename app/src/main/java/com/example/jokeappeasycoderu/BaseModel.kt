@@ -17,7 +17,6 @@ class BaseModel(
         if(getJokeFromCache) {
             cacheDataSource.getJoke(object : JokeCacheCallback {
                 override fun provide(joke: ServerModel.JokeServerModel) {
-                    cachedJokeServerModel = joke
                     jokeCallback?.provide(joke.toFavoriteJoke())
                 }
 
@@ -29,13 +28,14 @@ class BaseModel(
         } else
             cloudDataSource.getJoke(object: JokeCloudCallback{
                 override fun provide(joke: ServerModel.JokeServerModel) {
-                    TODO("Not yet implemented")
+                    cachedJokeServerModel = joke
+                    jokeCallback?.provide(joke.toJoke())
                 }
 
                 override fun fail(errorType: ErrorType) {
-                    TODO("Not yet implemented")
+                    val failure = if (errorType == ErrorType.NO_CONNECTION) noConnection else serviceUnavailable
+                    jokeCallback?.provide(Joke.Failed(failure.getMessage()))
                 }
-
             })
     }
 
