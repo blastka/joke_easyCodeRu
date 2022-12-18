@@ -15,7 +15,7 @@ class JokeApp : Application() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         viewModel = ViewModel(
-            BaseModel(TestCacheDataSource(), TestCloudDataSource(), 
+            BaseModel(TestCacheDataSource(), CloudDataSource.Base(retrofit.create(JokeService::class.java)),
                 ResourceManager.Base(this)
             )
         )

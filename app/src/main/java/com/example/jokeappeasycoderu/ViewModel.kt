@@ -1,18 +1,18 @@
 package com.example.jokeappeasycoderu
 
 class ViewModel(private val model: Model) {
-    private var callback: DataCallback? = null
+    private var dataCallback: DataCallback? = null
 
     private val jokeCallback = object : JokeCallback{
         override fun provide(joke: Joke) {
-            callback?.let {
+            dataCallback?.let {
                 joke.map(it)
             }
         }
     }
 
     fun init(callback: DataCallback) {
-        this.callback = callback
+        this.dataCallback = callback
         model.init(jokeCallback)
     }
 
@@ -21,7 +21,7 @@ class ViewModel(private val model: Model) {
     }
 
    fun clear(){
-       callback = null
+       dataCallback = null
        model.clear()
    }
 
