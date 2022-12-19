@@ -33,6 +33,7 @@ class BaseModel(
                 }
 
                 override fun fail(errorType: ErrorType) {
+                    cachedJokeServerModel = null
                     val failure = if (errorType == ErrorType.NO_CONNECTION) noConnection else serviceUnavailable
                     jokeCallback?.provide(Joke.Failed(failure.getMessage()))
                 }

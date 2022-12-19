@@ -2,21 +2,22 @@ package com.example.jokeappeasycoderu
 
 class TestCacheDataSource: CacheDataSource {
 
-    private val map = HashMap<Int, ServerModel.JokeServerModel>()
+    private val list = ArrayList<Pair<Int, ServerModel.JokeServerModel>>()
     override fun getJoke(jokeCacheCallback: JokeCacheCallback) {
-        if (map.isEmpty()){
+        if (list.isEmpty()){
             jokeCacheCallback.fail()
         } else
-            jokeCacheCallback.provide(map[0]!!)
+            jokeCacheCallback.provide(list.random().second)
     }
 
     override fun addOrRemove(id: Int, jokeServerModel: ServerModel.JokeServerModel): Joke {
-        return if (map.containsKey(id)){
-            val joke = map[id]!!.toJoke()
-            map.remove(id)
+        val found = list.find { it.first == id}
+        return if (found != null){
+            val joke = found.second.toJoke()
+            list.remove(found)
             joke
         } else{
-            map[id] = jokeServerModel
+            list.add(Pair(id, jokeServerModel))
             jokeServerModel.toFavoriteJoke()
         }
     }

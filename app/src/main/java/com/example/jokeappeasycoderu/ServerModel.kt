@@ -1,11 +1,13 @@
 package com.example.jokeappeasycoderu
 
+import com.example.jokeappeasycoderu.testCases.JokeRealm
 import com.google.gson.annotations.SerializedName
 
 interface ServerModel {
     fun toJoke(): Joke
     fun toFavoriteJoke(): Joke.FavoriteJoke
     fun change(cacheDataSource: CacheDataSource): Joke
+    fun toJokeRealm(): JokeRealm
 
     data class JokeServerModel(
         @SerializedName("id")
@@ -25,5 +27,16 @@ interface ServerModel {
         override fun change(cacheDataSource: CacheDataSource): Joke {
             return cacheDataSource.addOrRemove(id, this)
         }
+
+        override fun toJokeRealm(): JokeRealm {
+            return JokeRealm().also {
+                it.id = id
+                it.type = type
+                it.text = text
+                it.punchLine = punchline
+            }
+        }
+
+
     }
 }
