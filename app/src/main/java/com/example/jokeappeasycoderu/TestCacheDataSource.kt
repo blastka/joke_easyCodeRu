@@ -2,7 +2,7 @@ package com.example.jokeappeasycoderu
 
 class TestCacheDataSource: CacheDataSource {
 
-    private val list = ArrayList<Pair<Int, ServerModel.JokeServerModel>>()
+    private val list = ArrayList<Pair<Int, Joke>>()
     override fun getJoke(jokeCacheCallback: JokeCacheCallback) {
         if (list.isEmpty()){
             jokeCacheCallback.fail()
@@ -10,15 +10,15 @@ class TestCacheDataSource: CacheDataSource {
             jokeCacheCallback.provide(list.random().second)
     }
 
-    override fun addOrRemove(id: Int, jokeServerModel: ServerModel.JokeServerModel): Joke {
+    override fun addOrRemove(id: Int, joke: Joke): JokeUiModel {
         val found = list.find { it.first == id}
         return if (found != null){
             val joke = found.second.toJoke()
             list.remove(found)
             joke
         } else{
-            list.add(Pair(id, jokeServerModel))
-            jokeServerModel.toFavoriteJoke()
+            list.add(Pair(id, joke))
+            joke.toFavoriteJoke()
         }
     }
 }

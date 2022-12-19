@@ -9,5 +9,5 @@ interface Model {
 }
 
 interface ResultCallback {
-    fun provideJoke(joke: Joke)
+    fun provideJoke(joke: JokeUiModel)
 }

@@ -11,9 +11,9 @@ class TestViewModel(private val resourceManager: ResourceManager) : Model {
         Thread {
             Thread.sleep(1000)
             when (count) {
-                0 -> callback?.provide(Joke.Base("testText", "testPunchline"))
-                1 -> callback?.provide(Joke.FavoriteJoke("favorite", "favorite"))
-                2 -> callback?.provide(Joke.Failed(serviceUnavailable.getMessage()))
+                0 -> callback?.provide(JokeUiModel.Base("testText", "testPunchline"))
+                1 -> callback?.provide(JokeUiModel.FavoriteJoke("favorite", "favorite"))
+                2 -> callback?.provide(JokeUiModel.Failed(serviceUnavailable.getMessage()))
             }
             count++
             if (count == 3)

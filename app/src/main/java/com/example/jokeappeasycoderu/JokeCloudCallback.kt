@@ -1,7 +1,7 @@
 package com.example.jokeappeasycoderu
 
 interface JokeCloudCallback {
-    fun provide(joke: ServerModel.JokeServerModel)
+    fun provide(joke: Joke)
     fun fail(errorType: ErrorType)
 }
 

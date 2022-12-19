@@ -1,11 +1,10 @@
 package com.example.jokeappeasycoderu
 
-import com.example.jokeappeasycoderu.testCases.JokeRealm
 import io.realm.Realm
 
 interface CacheDataSource {
     fun getJoke(jokeCacheCallback: JokeCacheCallback)
-    fun addOrRemove(id: Int, jokeServerModel: ServerModel.JokeServerModel): Joke
+    fun addOrRemove(id: Int, joke: Joke): JokeUiModel
 
     class Base(private val realm: Realm) : CacheDataSource{
         override fun getJoke(jokeCacheCallback: JokeCacheCallback) {
@@ -17,7 +16,7 @@ interface CacheDataSource {
                     jokes.random().let {
                         joke ->
                         jokeCacheCallback.provide(
-                            ServerModel.JokeServerModel(
+                            Joke.Base(
                             joke.id,
                             joke.type,
                             joke.text,
@@ -27,20 +26,20 @@ interface CacheDataSource {
             }
         }
 
-        override fun addOrRemove(id: Int, jokeServerModel: ServerModel.JokeServerModel): Joke {
+        override fun addOrRemove(id: Int, joke: Joke): JokeUiModel {
             realm.let {
                 val jokeRealm = it.where(JokeRealm::class.java).equalTo("id", id).findFirst()
                 return if (jokeRealm == null){
-                    val newJoke = jokeServerModel.toJokeRealm()
+                    val newJoke = joke.toJokeRealm()
                     it.executeTransactionAsync { transition ->
                         transition.insert(newJoke)
                     }
-                    jokeServerModel.toFavoriteJoke()
+                    joke.toFavoriteJoke()
                 } else {
                     it.executeTransactionAsync {
                         jokeRealm.deleteFromRealm()
                     }
-                    jokeServerModel.toJoke()
+                    joke.toJoke()
                 }
             }
         }

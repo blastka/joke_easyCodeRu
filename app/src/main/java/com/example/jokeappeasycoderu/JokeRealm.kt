@@ -1,4 +1,4 @@
-package com.example.jokeappeasycoderu.testCases
+package com.example.jokeappeasycoderu
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey

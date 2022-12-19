@@ -1,44 +1,34 @@
 package com.example.jokeappeasycoderu
 
-import androidx.annotation.DrawableRes
-
 interface Joke {
-    fun getJokeUi(): String
-    fun map(callback: DataCallback)
+    fun toJoke(): JokeUiModel
+    fun toFavoriteJoke(): JokeUiModel.FavoriteJoke
+    fun change(cacheDataSource: CacheDataSource): JokeUiModel
+    fun toJokeRealm(): JokeRealm
 
-    class Base(private val text: String, private val punchline: String) :
-        Abstract(text, punchline) {
-        override fun getIconResId(): Int {
-            return R.drawable.ic_baseline_favorite_border_24
-        }
-    }
+    class Base(
+        private val id: Int,
+        private val type: String,
+        private val text: String,
+        private val punchline: String
+    ) : Joke {
 
-    class FavoriteJoke(private val text: String, private val punchline: String) :
-        Abstract(text, punchline) {
-        override fun getIconResId(): Int {
-            return R.drawable.ic_baseline_favorite_24
-        }
-    }
+        override fun toJoke(): JokeUiModel = JokeUiModel.Base(text, punchline)
 
-    class Failed(text: String) : Abstract(text, "") {
-        override fun getIconResId(): Int {
-            return 0
-        }
-    }
+        override fun toFavoriteJoke(): JokeUiModel.FavoriteJoke =
+            JokeUiModel.FavoriteJoke(text, punchline)
 
-    abstract class Abstract(private val text: String, private val punchline: String) : Joke {
-        override fun getJokeUi(): String {
-            return "$text\n$punchline"
-        }
+        override fun change(cacheDataSource: CacheDataSource): JokeUiModel =
+            cacheDataSource.addOrRemove(id, this)
 
-        override fun map(callback: DataCallback) {
-            callback.run {
-                provideText(getJokeUi())
-                provideIconRes(getIconResId())
-            }
+        override fun toJokeRealm(): JokeRealm
+            = JokeRealm().also {
+                it.id = id
+                it.type = type
+                it.text = text
+                it.punchLine = punchline
+
         }
 
-        @DrawableRes
-        abstract fun getIconResId(): Int
     }
 }

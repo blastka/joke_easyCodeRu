@@ -11,31 +11,33 @@ class BaseModel(
     private val noConnection by lazy { NoConnection(resourceManager) }
     private val serviceUnavailable by lazy { ServiceUnavailable(resourceManager) }
     private val noCachedJokes by lazy{NoCachedJokes(resourceManager)}
-    private var cachedJokeServerModel: ServerModel? = null
+    private var cachedJoke: Joke? = null
     private var getJokeFromCache = false
+
     override fun getJoke() {
         if(getJokeFromCache) {
             cacheDataSource.getJoke(object : JokeCacheCallback {
-                override fun provide(joke: ServerModel.JokeServerModel) {
+                override fun provide(joke: Joke) {
+                    cachedJoke = joke
                     jokeCallback?.provide(joke.toFavoriteJoke())
                 }
 
                 override fun fail() {
-                    jokeCallback?.provide(Joke.Failed(noCachedJokes.getMessage()))
+                    jokeCallback?.provide(JokeUiModel.Failed(noCachedJokes.getMessage()))
                 }
 
             })
         } else
             cloudDataSource.getJoke(object: JokeCloudCallback{
-                override fun provide(joke: ServerModel.JokeServerModel) {
-                    cachedJokeServerModel = joke
+                override fun provide(joke: Joke) {
+                    cachedJoke = joke
                     jokeCallback?.provide(joke.toJoke())
                 }
 
                 override fun fail(errorType: ErrorType) {
-                    cachedJokeServerModel = null
+                    cachedJoke = null
                     val failure = if (errorType == ErrorType.NO_CONNECTION) noConnection else serviceUnavailable
-                    jokeCallback?.provide(Joke.Failed(failure.getMessage()))
+                    jokeCallback?.provide(JokeUiModel.Failed(failure.getMessage()))
                 }
             })
     }
@@ -49,7 +51,7 @@ class BaseModel(
     }
 
     override fun changeJokeStatus(jokeCallback: JokeCallback) {
-        cachedJokeServerModel?.change(cacheDataSource)?.let {
+        cachedJoke?.change(cacheDataSource)?.let {
             jokeCallback.provide(it)
         }
     }
