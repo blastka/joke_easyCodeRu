@@ -39,7 +39,12 @@ class JokeViewModel(private val model: Model): ViewModel() {
     }
 
     fun changeJokeStatus(){
-        model.changeJokeStatus(jokeCallback)
+        viewModelScope.launch {
+            val uiModel = model.changeJokeStatus()
+            dataCallback?.let {
+                uiModel?.map(it)
+            }
+        }
     }
 
 }

@@ -3,7 +3,7 @@ package com.example.jokeappeasycoderu
 interface Joke {
     fun toJoke(): JokeUiModel
     fun toFavoriteJoke(): JokeUiModel.FavoriteJoke
-    fun change(cacheDataSource: CacheDataSource): JokeUiModel
+    suspend fun change(cacheDataSource: CacheDataSource): JokeUiModel
     fun toJokeRealm(): JokeRealm
 
     class Base(
@@ -18,7 +18,7 @@ interface Joke {
         override fun toFavoriteJoke(): JokeUiModel.FavoriteJoke =
             JokeUiModel.FavoriteJoke(text, punchline)
 
-        override fun change(cacheDataSource: CacheDataSource): JokeUiModel =
+        override suspend fun change(cacheDataSource: CacheDataSource): JokeUiModel =
             cacheDataSource.addOrRemove(id, this)
 
         override fun toJokeRealm(): JokeRealm

@@ -1,12 +1,14 @@
 package com.example.jokeappeasycoderu
 
 import io.realm.Realm
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 interface CacheDataSource {
     suspend fun getJoke(): Result<Joke, Unit>
-    fun addOrRemove(id: Int, joke: Joke): JokeUiModel
+    suspend fun addOrRemove(id: Int, joke: Joke): JokeUiModel
 
-    class Base(private val realm: Realm) : CacheDataSource{
+    class Base(private val realm: Realm) : CacheDataSource {
 
         override suspend fun getJoke(): Result<Joke, Unit> {
             realm.let {
@@ -14,32 +16,35 @@ interface CacheDataSource {
                 if (jokes.isEmpty())
                     return Result.Error(Unit)
                 else
-                    jokes.random().let {
-                        joke ->
-                        return Result.Success(Joke.Base(
-                            joke.id,
-                            joke.type,
-                            joke.text,
-                            joke.punchLine
-                        ))
+                    jokes.random().let { joke ->
+                        return Result.Success(
+                            Joke.Base(
+                                joke.id,
+                                joke.type,
+                                joke.text,
+                                joke.punchLine
+                            )
+                        )
                     }
             }
         }
 
-        override fun addOrRemove(id: Int, joke: Joke): JokeUiModel {
-            realm.let {
-                val jokeRealm = it.where(JokeRealm::class.java).equalTo("id", id).findFirst()
-                return if (jokeRealm == null){
-                    val newJoke = joke.toJokeRealm()
-                    it.executeTransactionAsync { transition ->
-                        transition.insert(newJoke)
+        override suspend fun addOrRemove(id: Int, joke: Joke): JokeUiModel {
+            return withContext(Dispatchers.IO) {
+                Realm.getDefaultInstance().use {
+                    val jokeRealm = it.where(JokeRealm::class.java).equalTo("id", id).findFirst()
+                    if (jokeRealm == null) {
+                        it.executeTransaction { transition ->
+                            val newJoke = joke.toJokeRealm()
+                            transition.insert(newJoke)
+                        }
+                        return@withContext joke.toFavoriteJoke()
+                    } else {
+                        it.executeTransaction {
+                            jokeRealm.deleteFromRealm()
+                        }
+                        return@withContext joke.toJoke()
                     }
-                    joke.toFavoriteJoke()
-                } else {
-                    it.executeTransactionAsync {
-                        jokeRealm.deleteFromRealm()
-                    }
-                    joke.toJoke()
                 }
             }
         }

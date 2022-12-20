@@ -53,10 +53,8 @@ class BaseModel(
         jokeCallback = null
     }
 
-    override fun changeJokeStatus(jokeCallback: JokeCallback) {
-        cachedJoke?.change(cacheDataSource)?.let {
-            jokeCallback.provide(it)
-        }
+    override suspend fun changeJokeStatus(): JokeUiModel? {
+        return cachedJoke?.change(cacheDataSource)
     }
 
     override fun chooseDataSource(cached: Boolean) {
