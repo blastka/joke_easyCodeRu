@@ -7,7 +7,7 @@ import android.widget.*
 import com.example.jokeappeasycoderu.*
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var viewModel: ViewModel
+    private lateinit var viewModel: JokeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +34,13 @@ class MainActivity : AppCompatActivity() {
 
 
         viewModel.init(object : DataCallback{
-            override fun provideText(text: String) = runOnUiThread{
+            override fun provideText(text: String){
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE
                 textView.text = text
             }
 
-            override fun provideIconRes(id: Int) = runOnUiThread{
+            override fun provideIconRes(id: Int) {
                 favoriteImageButton.setImageResource(id)
             }
 

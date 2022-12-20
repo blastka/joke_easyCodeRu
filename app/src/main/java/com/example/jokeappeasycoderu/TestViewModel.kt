@@ -1,5 +1,6 @@
 package com.example.jokeappeasycoderu
 
+/*
 class TestViewModel(private val resourceManager: ResourceManager) : Model {
 
     private var callback: JokeCallback? = null
@@ -7,7 +8,7 @@ class TestViewModel(private val resourceManager: ResourceManager) : Model {
     private val noConnection = NoConnection(resourceManager)
     private val serviceUnavailable = ServiceUnavailable(resourceManager)
 
-    override fun getJoke() {
+    override suspend fun getJoke() {
         Thread {
             Thread.sleep(1000)
             when (count) {
@@ -36,4 +37,4 @@ class TestViewModel(private val resourceManager: ResourceManager) : Model {
     override fun chooseDataSource(cached: Boolean) {
         TODO("Not yet implemented")
     }
-}
+}*/

@@ -5,30 +5,21 @@ import retrofit2.Response
 import java.net.UnknownHostException
 
 interface CloudDataSource {
-    fun getJoke(callback: JokeCloudCallback)
+    suspend fun getJoke(): Result<JokeServerModel, ErrorType>
 
     class Base(private val service: JokeService) : CloudDataSource {
-        override fun getJoke(jokeCloudCallback: JokeCloudCallback) {
-            service.getJoke().enqueue(object : retrofit2.Callback<JokeServerModel> {
-                override fun onResponse(
-                    call: Call<JokeServerModel>,
-                    response: Response<JokeServerModel>
-                ) {
-                    if (response.isSuccessful)
-                        jokeCloudCallback.provide(response.body()!!.toJoke())
-                    else
-                        jokeCloudCallback.fail(ErrorType.SERVICE_UNAVAILABLE)
-                }
 
-                override fun onFailure(call: Call<JokeServerModel>, t: Throwable) {
-                    val errorType = if (t is UnknownHostException)
-                        ErrorType.NO_CONNECTION
-                    else
-                        ErrorType.SERVICE_UNAVAILABLE
-                    jokeCloudCallback.fail(errorType)
-                }
-            })
+        override suspend fun getJoke(): Result<JokeServerModel, ErrorType> {
+            return try {
+                val result = service.getJoke()
+                Result.Success(result)
+            } catch (e: Exception){
+                val errorType = if (e is UnknownHostException)
+                    ErrorType.NO_CONNECTION
+                else
+                    ErrorType.SERVICE_UNAVAILABLE
+                Result.Error(errorType)
+            }
         }
-
     }
 }

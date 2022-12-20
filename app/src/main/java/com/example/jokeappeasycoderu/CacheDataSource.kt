@@ -3,20 +3,20 @@ package com.example.jokeappeasycoderu
 import io.realm.Realm
 
 interface CacheDataSource {
-    fun getJoke(jokeCacheCallback: JokeCacheCallback)
+    suspend fun getJoke(): Result<Joke, Unit>
     fun addOrRemove(id: Int, joke: Joke): JokeUiModel
 
     class Base(private val realm: Realm) : CacheDataSource{
-        override fun getJoke(jokeCacheCallback: JokeCacheCallback) {
+
+        override suspend fun getJoke(): Result<Joke, Unit> {
             realm.let {
                 val jokes = it.where(JokeRealm::class.java).findAll()
                 if (jokes.isEmpty())
-                    jokeCacheCallback.fail()
+                    return Result.Error(Unit)
                 else
                     jokes.random().let {
                         joke ->
-                        jokeCacheCallback.provide(
-                            Joke.Base(
+                        return Result.Success(Joke.Base(
                             joke.id,
                             joke.type,
                             joke.text,

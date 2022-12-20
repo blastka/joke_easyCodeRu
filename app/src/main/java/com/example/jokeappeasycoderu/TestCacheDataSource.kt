@@ -1,5 +1,5 @@
 package com.example.jokeappeasycoderu
-
+/*
 class TestCacheDataSource: CacheDataSource {
 
     private val list = ArrayList<Pair<Int, Joke>>()
@@ -21,4 +21,4 @@ class TestCacheDataSource: CacheDataSource {
             joke.toFavoriteJoke()
         }
     }
-}
+}*/

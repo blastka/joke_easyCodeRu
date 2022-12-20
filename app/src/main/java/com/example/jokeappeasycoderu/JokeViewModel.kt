@@ -1,6 +1,10 @@
 package com.example.jokeappeasycoderu
 
-class ViewModel(private val model: Model) {
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+
+class JokeViewModel(private val model: Model): ViewModel() {
     private var dataCallback: DataCallback? = null
 
     private val jokeCallback = object : JokeCallback{
@@ -17,7 +21,12 @@ class ViewModel(private val model: Model) {
     }
 
     fun getJoke(){
-        model.getJoke()
+        viewModelScope.launch {
+            val uiModel = model.getJoke()
+            dataCallback?.let {
+                uiModel.map(it)
+            }
+        }
     }
 
    fun clear(){
