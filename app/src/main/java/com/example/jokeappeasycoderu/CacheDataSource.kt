@@ -8,10 +8,10 @@ interface CacheDataSource {
     suspend fun getJoke(): Result<Joke, Unit>
     suspend fun addOrRemove(id: Int, joke: Joke): JokeUiModel
 
-    class Base(private val realm: Realm) : CacheDataSource {
+    class Base(private val realmProvider: RealmProvider) : CacheDataSource {
 
         override suspend fun getJoke(): Result<Joke, Unit> {
-            realm.let {
+            realmProvider.provide().use {
                 val jokes = it.where(JokeRealm::class.java).findAll()
                 if (jokes.isEmpty())
                     return Result.Error(Unit)

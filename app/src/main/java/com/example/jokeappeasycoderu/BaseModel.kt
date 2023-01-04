@@ -6,7 +6,6 @@ class BaseModel(
     private val resourceManager: ResourceManager
 ) :
     Model {
-    private var jokeCallback: JokeCallback? = null
 
     private val noConnection by lazy { NoConnection(resourceManager) }
     private val serviceUnavailable by lazy { ServiceUnavailable(resourceManager) }
@@ -43,14 +42,6 @@ class BaseModel(
                 }
             }
         }
-    }
-
-    override fun init(callback: JokeCallback) {
-        this.jokeCallback = callback
-    }
-
-    override fun clear() {
-        jokeCallback = null
     }
 
     override suspend fun changeJokeStatus(): JokeUiModel? {

@@ -21,7 +21,7 @@ class JokeApp : Application() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         viewModel = JokeViewModel(
-            BaseModel(CacheDataSource.Base(Realm.getDefaultInstance()), CloudDataSource.Base(retrofit.create(JokeService::class.java)),
+            BaseModel(CacheDataSource.Base(RealmProvider.Base()), CloudDataSource.Base(retrofit.create(JokeService::class.java)),
                 ResourceManager.Base(this)
             )
         )
