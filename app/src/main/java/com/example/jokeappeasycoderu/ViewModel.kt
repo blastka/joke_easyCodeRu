@@ -1,5 +1,7 @@
 package com.example.jokeappeasycoderu
 
+import android.util.Log
+
 class ViewModel(private val model: Model<Joke, JokeFailure>) {
     private var callback: TextCallback? = null
 
@@ -18,6 +20,7 @@ class ViewModel(private val model: Model<Joke, JokeFailure>) {
     }
     fun getJoke(){
         model.getJoke()
+
     }
 
    fun clear(){

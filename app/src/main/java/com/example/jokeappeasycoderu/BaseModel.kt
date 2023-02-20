@@ -1,5 +1,6 @@
 package com.example.jokeappeasycoderu
 
+import android.util.Log
 import retrofit2.Call
 import retrofit2.Response
 import java.net.UnknownHostException
@@ -10,6 +11,14 @@ class BaseModel(private val service: JokeService, private val resourceManager: R
     private val noConnection by lazy { NoConnection(resourceManager) }
     private val serviceUnavailable by lazy { ServiceUnavailable(resourceManager) }
 
+    /**
+     * Я так понимаю это для работы с колбэками используем метод enqueue
+     * Он ансинхронен и принимает в себя колбэк ретрофита.
+     * Далее в колбэк, который пробросили
+     *
+     * Так как в колбэке ResultCallback<Joke, JokeFailure> Класс JokeFailure общий
+     * поэтому ошибки NoConnection и ServiceUnavailable можем прокинуть
+     */
     override fun getJoke() {
         service.getJoke().enqueue(object : retrofit2.Callback<JokeDTO> {
             override fun onResponse(call: Call<JokeDTO>, response: Response<JokeDTO>) {

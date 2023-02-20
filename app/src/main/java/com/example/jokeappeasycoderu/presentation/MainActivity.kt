@@ -2,6 +2,7 @@ package com.example.jokeappeasycoderu.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -29,13 +30,19 @@ class MainActivity : AppCompatActivity() {
             viewModel.getJoke()
         }
 
+        /**
+         * Этот init передает в ВМ реализованый анонимный класс который колбэк
+         * что при возврате в него кнопка станет активной, прогресс бар скроется
+         * у текствью присвоится текст ,который отдали в колбэк
+         * И так как
+         */
         viewModel.init(object : TextCallback{
-            override fun provideText(text: String) = runOnUiThread{
+            override fun provideText(text: String) {
                 button.isEnabled = true
                 progressBar.visibility = View.INVISIBLE
                 textView.text = text
-            }
 
+            }
         })
     }
 
