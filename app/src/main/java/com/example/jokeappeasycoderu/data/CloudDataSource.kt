@@ -1,11 +1,10 @@
-package com.example.jokeappeasycoderu
+package com.example.jokeappeasycoderu.data
 
-import retrofit2.Call
-import retrofit2.Response
+import com.example.jokeappeasycoderu.*
 import java.net.UnknownHostException
 
-interface CloudDataSource {
-    suspend fun getJoke(): Result<JokeServerModel, ErrorType>
+interface CloudDataSource: JokeDataFetcher<JokeServerModel, ErrorType> {
+    override suspend fun getJoke(): Result<JokeServerModel, ErrorType>
 
     class Base(private val service: JokeService) : CloudDataSource {
 

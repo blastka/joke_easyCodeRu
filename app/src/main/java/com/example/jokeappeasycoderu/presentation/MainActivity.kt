@@ -33,22 +33,14 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        viewModel.init(object : DataCallback{
-            override fun provideText(text: String){
-                button.isEnabled = true
-                progressBar.visibility = View.INVISIBLE
-                textView.text = text
-            }
+        viewModel.observe(this) { (text, drawableResId) ->
+            button.isEnabled = true
+            progressBar.visibility = View.INVISIBLE
+            textView.text = text
+            favoriteImageButton.setImageResource(drawableResId)
 
-            override fun provideIconRes(id: Int) {
-                favoriteImageButton.setImageResource(id)
-            }
-
-        })
+        }
     }
 
-    override fun onDestroy() {
-        viewModel.clear()
-        super.onDestroy()
-    }
+
 }

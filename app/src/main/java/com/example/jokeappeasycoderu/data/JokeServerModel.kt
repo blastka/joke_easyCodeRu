@@ -1,9 +1,9 @@
-package com.example.jokeappeasycoderu
+package com.example.jokeappeasycoderu.data
 
 import com.google.gson.annotations.SerializedName
 
 interface JokeServerModel {
-    fun toJoke(): Joke
+    fun toJokeDataModel(): JokeDataModel
 
     data class Base(
         @SerializedName("id")
@@ -15,8 +15,8 @@ interface JokeServerModel {
         @SerializedName("punchline")
         private val punchline: String
     ) : JokeServerModel {
-        override fun toJoke(): Joke =
-            Joke.Base(id, type, text, punchline)
+        override fun toJokeDataModel(): JokeDataModel =
+            JokeDataModel(id, type, text, punchline)
 
     }
 

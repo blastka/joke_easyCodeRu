@@ -1,6 +1,9 @@
 package com.example.jokeappeasycoderu
 
 import android.app.Application
+import com.example.jokeappeasycoderu.data.*
+import com.example.jokeappeasycoderu.presentation.Communication
+import com.example.jokeappeasycoderu.presentation.JokeViewModel
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import retrofit2.Retrofit
@@ -21,9 +24,11 @@ class JokeApp : Application() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         viewModel = JokeViewModel(
-            BaseModel(CacheDataSource.Base(RealmProvider.Base()), CloudDataSource.Base(retrofit.create(JokeService::class.java)),
+            Repository(
+                CacheDataSource.Base(RealmProvider.Base()), CloudDataSource.Base(retrofit.create(
+                    JokeService::class.java)),
                 ResourceManager.Base(this)
-            )
+            ), Communication.Base()
         )
     }
 

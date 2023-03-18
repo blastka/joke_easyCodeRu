@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 
 interface JokeUiModel {
     fun getJokeUi(): String
-    fun map(callback: DataCallback)
 
     class Base(private val text: String, private val punchline: String) :
         Abstract(text, punchline) {
@@ -30,13 +29,6 @@ interface JokeUiModel {
         JokeUiModel {
         override fun getJokeUi(): String {
             return "$text\n$punchline"
-        }
-
-        override fun map(callback: DataCallback) {
-            callback.run {
-                provideText(getJokeUi())
-                provideIconRes(getIconResId())
-            }
         }
 
         @DrawableRes

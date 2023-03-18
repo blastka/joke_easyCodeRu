@@ -1,4 +1,4 @@
-package com.example.jokeappeasycoderu
+package com.example.jokeappeasycoderu.data
 
 import io.realm.Realm
 

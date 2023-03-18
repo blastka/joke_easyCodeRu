@@ -1,10 +1,13 @@
 package com.example.jokeappeasycoderu
 
+import com.example.jokeappeasycoderu.data.CacheDataSource
+import com.example.jokeappeasycoderu.data.JokeRealmModel
+
 interface Joke {
     fun toJoke(): JokeUiModel
     fun toFavoriteJoke(): JokeUiModel.FavoriteJoke
     suspend fun change(cacheDataSource: CacheDataSource): JokeUiModel
-    fun toJokeRealm(): JokeRealm
+    fun toJokeRealm(): JokeRealmModel
 
     class Base(
         private val id: Int,
@@ -21,8 +24,8 @@ interface Joke {
         override suspend fun change(cacheDataSource: CacheDataSource): JokeUiModel =
             cacheDataSource.addOrRemove(id, this)
 
-        override fun toJokeRealm(): JokeRealm
-            = JokeRealm().also {
+        override fun toJokeRealm(): JokeRealmModel
+            = JokeRealmModel().also {
                 it.id = id
                 it.type = type
                 it.text = text

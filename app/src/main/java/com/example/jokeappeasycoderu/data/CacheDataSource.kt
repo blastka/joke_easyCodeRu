@@ -1,18 +1,22 @@
-package com.example.jokeappeasycoderu
+package com.example.jokeappeasycoderu.data
 
+import com.example.jokeappeasycoderu.*
 import io.realm.Realm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-interface CacheDataSource {
-    suspend fun getJoke(): Result<Joke, Unit>
+interface ChangeCacheDataSource{
     suspend fun addOrRemove(id: Int, joke: Joke): JokeUiModel
+}
+
+interface CacheDataSource: ChangeCacheDataSource, JokeDataFetcher<Joke, Unit> {
+    override suspend fun getJoke(): Result<Joke, Unit>
 
     class Base(private val realmProvider: RealmProvider) : CacheDataSource {
 
         override suspend fun getJoke(): Result<Joke, Unit> {
             realmProvider.provide().use {
-                val jokes = it.where(JokeRealm::class.java).findAll()
+                val jokes = it.where(JokeRealmModel::class.java).findAll()
                 if (jokes.isEmpty())
                     return Result.Error(Unit)
                 else
@@ -32,7 +36,7 @@ interface CacheDataSource {
         override suspend fun addOrRemove(id: Int, joke: Joke): JokeUiModel {
             return withContext(Dispatchers.IO) {
                 Realm.getDefaultInstance().use {
-                    val jokeRealm = it.where(JokeRealm::class.java).equalTo("id", id).findFirst()
+                    val jokeRealm = it.where(JokeRealmModel::class.java).equalTo("id", id).findFirst()
                     if (jokeRealm == null) {
                         it.executeTransaction { transition ->
                             val newJoke = joke.toJokeRealm()

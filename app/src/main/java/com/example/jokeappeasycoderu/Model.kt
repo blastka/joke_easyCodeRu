@@ -6,6 +6,3 @@ interface Model {
     fun chooseDataSource(cached: Boolean)
 }
 
-interface ResultCallback {
-    fun provideJoke(joke: JokeUiModel)
-}

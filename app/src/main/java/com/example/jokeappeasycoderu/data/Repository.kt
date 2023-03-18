@@ -1,6 +1,8 @@
-package com.example.jokeappeasycoderu
+package com.example.jokeappeasycoderu.data
 
-class BaseModel(
+import com.example.jokeappeasycoderu.*
+
+class Repository(
     private val cacheDataSource: CacheDataSource,
     private val cloudDataSource: CloudDataSource,
     private val resourceManager: ResourceManager
@@ -28,7 +30,7 @@ class BaseModel(
         } else {
             return when (val result = cloudDataSource.getJoke()) {
                 is Result.Success<JokeServerModel> -> {
-                    result.data.toJoke().let {
+                    result.data.toJokeDataModel().let {
                         cachedJoke = it
                         it.toJoke()
                     }
@@ -51,4 +53,12 @@ class BaseModel(
     override fun chooseDataSource(cached: Boolean) {
         getJokeFromCache = cached
     }
+
+    private abstract inner class BaseResultHandler<S, E>(private val jokeDataFetcher: JokeDataFetcher<S, E>) :
+        ResultHandler<S, E> {
+        suspend fun process(): JokeUiModel {
+            return handlerResult(jokeDataFetcher.getJoke())
+        }
+    }
 }
+
