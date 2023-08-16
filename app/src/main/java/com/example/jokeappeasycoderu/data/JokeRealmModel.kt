@@ -1,14 +1,13 @@
 package com.example.jokeappeasycoderu.data
 
+import com.example.jokeappeasycoderu.core.Mapper
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
-open class JokeRealmModel: RealmObject() {
+open class JokeRealmModel : RealmObject(), Mapper<JokeDataModel> {
     @PrimaryKey
     var id: Int = -1
     var text: String = ""
     var punchLine: String = ""
-    var type: String = ""
-
-    fun toJokeDataModel() = JokeDataModel(id, type, text, punchLine)
+    override fun to() = JokeDataModel(id, text, punchLine, true)
 }

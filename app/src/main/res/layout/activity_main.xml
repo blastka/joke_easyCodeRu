@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <com.example.jokeappeasycoderu.presentation.CorrectTextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:layout_marginEnd="20dp"
             android:text="Hello World!" />
 
-        <ImageButton
+        <com.example.jokeappeasycoderu.presentation.CorrectImageButton
             android:id="@+id/favoriteImageButton"
             android:background="?selectableItemBackground"
             android:layout_gravity="center_vertical"
@@ -36,15 +36,15 @@
             tools:src="@drawable/ic_baseline_favorite_border_24" />
     </LinearLayout>
 
-    <ProgressBar
+    <com.example.jokeappeasycoderu.presentation.CorrectProgress
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true" />
 
-    <Button
-        android:id="@+id/button"
+    <com.example.jokeappeasycoderu.presentation.CorrectButton
+        android:id="@+id/actionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/get_joke" />
