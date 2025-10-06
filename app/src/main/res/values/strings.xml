@@ -4,4 +4,6 @@
     <string name="no_connection">No internet connection</string>
     <string name="service_unavailable">Service is unavailable</string>
     <string name="no_cached_jokes">"No favorite jokes! Add one by heart icon"</string>
+    <string name="fail_message">"Unknown result"</string>
+    <string name="generic_fail_message">"Unknown"</string>
 </resources>

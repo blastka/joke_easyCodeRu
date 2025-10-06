@@ -1,4 +1,4 @@
-package com.example.jokeappeasycoderu
+package com.example.jokeappeasycoderu.core
 
 import android.content.Context
 import androidx.annotation.StringRes
@@ -10,8 +10,5 @@ interface ResourceManager {
         override fun getString(stringRes: Int): String {
             return context.getString(stringRes)
         }
-
-
     }
 }
-
